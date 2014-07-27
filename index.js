@@ -1,5 +1,9 @@
 var express = require('express');
 var app = express();
+var dotenv = require('dotenv');
+dotenv.load();
+
+
 var config = require('./config.js');
 
 var pubnub = require("pubnub").init({
