@@ -22,7 +22,7 @@ var users = {
 
 var games = {};
 
-app.post('api/login', bodyParser.json() ,function (req, res){
+app.post('/api/login', bodyParser.json() ,function (req, res){
 	console.log(req.body);
 	if (users[req.body.user] && (users[req.body.user] === req.body.password)){
 		var token = jwt.encode( { 'user' :req.body.user }, secret);
