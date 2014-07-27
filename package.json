@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/cultofmetatron/suchluck-server/issues"
   },
-  "homepage": "https://github.com/cultofmetatron/suchluck-server"
+  "homepage": "https://github.com/cultofmetatron/suchluck-server",
+  "dependencies": {
+    "express": "^4.7.1"
+  }
 }
