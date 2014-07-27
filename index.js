@@ -1,14 +1,18 @@
-var express    = require('express');
-var app        = express();
-var dotenv     = require('dotenv');
-var secret     = 'meowmeowmeowmeowmeowmeow';
-var bodyParser = require('body-parser');
-var jwt 			 = require('jwt-simple');
-var jwtExp		 = require('express-jwt');
+var express    = require('express'),
+    app        = express(),
+    dotenv     = require('dotenv'),
+    secret     = 'meowmeowmeowmeowmeowmeow',
+    bodyParser = require('body-parser'),
+     jwt 			 = require('jwt-simple'),
+    jwtExp		 = require('express-jwt'),
+    cors 			 = require('cors'),
+    stores		 = {},
+    sessions   = {},
+    config     = require('./config.js');
+
+
 dotenv.load();
-
-
-var config = require('./config.js');
+app.use(cors());
 
 var pubnub = require("pubnub").init({
     publish_key   : config.publish,
@@ -17,22 +21,36 @@ var pubnub = require("pubnub").init({
 });
 
 var users = {
-  'doge':'dogepass'
+  'doge':'dogepass',
+  'yolo': 'swag'
 };
 
 var games = {};
 
 app.post('/api/login', bodyParser.json() ,function (req, res){
-	console.log(req.body);
-	if (users[req.body.user] && (users[req.body.user] === req.body.password)){
-		var token = jwt.encode( { 'user' :req.body.user }, secret);
+
+	if (users[req.body.username] && (users[req.body.username] === req.body.password)){
+		var token = jwt.encode( { 'username' :req.body.username }, secret);
 		res.send({token: token});
 	} else {
 		res.send(403, { error:'User not found!' });
 	}
+
 });
 
+app.get('/api/channels', jwtExp({'secret': secret}), function(req, res) {
+		console.log(req.user.username);
+    //if (!req.user.admin) return res.send(401);
+    res.send(200, {
+    	message: 'success ' + req.user.username
+    });
+  })
 
+
+
+
+
+//    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InlvbG8ifQ.L83E197A-_-o4FyhCwHB9wIKTaAzhmzvbPebR42i1Jo"
 
 //create a jwt (jason web token) --> send that to user object using response
 //find how to sign your own docs
@@ -45,7 +63,7 @@ take request.body.user and request.body.password and create a token and send it 
 send it back using request.send
 
 express jwt is middleware to take the jwt from the request and intercept it and
-extract user id out of it and put it on request.user so you can access user by request.user.user 
+extract user id out of it and put it on request.user so you can access user by request.user.username
 (first user created by jwt 2nd user is set in user object)
 **/
 
