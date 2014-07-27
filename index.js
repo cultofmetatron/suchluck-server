@@ -1,5 +1,12 @@
 var express = require('express');
 var app = express();
+var config = require('./config.js');
+
+var pubnub = require("pubnub").init({
+    publish_key   : config.publish,
+    subscribe_key : config.subscribe,
+    secret_key: config.auth_key
+});
 
 var users = {
   'doge':'dogepass'
